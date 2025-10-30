@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     container_name: evolva_app
     volumes:
-      - ./evolva-backend:/var/www/html
+      - ./backend:/var/www/html
     networks:
       - evolva-net
     depends_on:
