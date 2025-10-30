@@ -17,4 +17,9 @@ class UserService
 
         return $user;
     }
+
+    public function getUserByEmail(string $email): ?User
+    {
+        return User::where('email', $email)->first();
+    }
 }
