@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\UserResource;
+use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -85,5 +88,14 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Logout realizado com sucesso!'
         ]);
+    }
+
+    public function update(UpdateUserRequest $request, User $user)
+    {
+        $validatedData = $request->validated();
+
+        $updatedUser = $this->userService->updateUser($user, $validatedData);
+
+        return new UserResource($updatedUser);
     }
 }
