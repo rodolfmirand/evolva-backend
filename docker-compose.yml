@@ -6,7 +6,6 @@ services:
     container_name: evolva_app
     volumes:
       - ./backend:/var/www/html
-      - /var/www/html/vendor
     networks:
       - evolva-net
     depends_on:
