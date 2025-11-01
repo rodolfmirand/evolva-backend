@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 
 class UserService
@@ -21,5 +22,20 @@ class UserService
     public function getUserByEmail(string $email): ?User
     {
         return User::where('email', $email)->first();
+    }
+
+    public function updateUser(User $user, array $data): User
+    {
+        $updateData = Arr::only($data, ['name', 'email', 'password']);
+
+        // Hasher a senha somente se ela foi enviada na requisição
+        if(isset($updateData['password'])){
+            $updateData['password'] = Hash::make($updateData['password']);
+        }
+
+        $user->fill($updateData);
+        $user->save();
+
+        return $user;
     }
 }
