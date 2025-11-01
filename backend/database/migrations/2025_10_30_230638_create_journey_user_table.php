@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->foreignId('journey_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->boolean('is_master')->default(false);
-            $table->joinedAt();
+            $table->timestamp('joined_at')->useCurrent();
         });
     }
 
