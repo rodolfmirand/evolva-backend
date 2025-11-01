@@ -1,7 +1,6 @@
 FROM php:8.2-fpm
 
-ENV COMPOSER_ALLOW_SUPERUSER=1 \
-    LARAVEL_SAIL=1
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
 RUN apt-get update && apt-get install -y \
     git zip unzip libzip-dev libpng-dev libonig-dev libxml2-dev libicu-dev \
@@ -10,15 +9,19 @@ RUN apt-get update && apt-get install -y \
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-WORKDIR /var/www/html/taskup-backend
+WORKDIR /var/www/html
 
-COPY taskup-backend/ ./
+COPY backend/ ./
 
-RUN mkdir -p storage bootstrap/cache
+RUN mkdir -p storage bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache
 
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+RUN apt-get update && apt-get install -y \
+    git zip unzip libzip-dev libpng-dev libonig-dev libxml2-dev libicu-dev \
+    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath intl \
+    && docker-php-ext-install fileinfo \
+    && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 9000
 
-ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["php-fpm"]

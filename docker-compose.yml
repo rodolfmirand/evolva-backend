@@ -3,30 +3,30 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: taskup_app
+    container_name: evolva_app
     volumes:
-      - ./taskup-backend:/var/www/html/taskup-backend
+      - ./backend:/var/www/html
     networks:
-      - taskup-net
+      - evolva-net
     depends_on:
       - db
 
   nginx:
     image: nginx:stable
-    container_name: taskup_nginx
+    container_name: evolva_nginx
     ports:
       - "${NGINX_PORT}:80"
     volumes:
-      - ./taskup-backend:/var/www/html
+      - ./backend:/var/www/html
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
     networks:
-      - taskup-net
+      - evolva-net
     depends_on:
       - app
 
   db:
     image: mysql:8.0
-    container_name: taskup_db
+    container_name: evolva_db
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -38,11 +38,11 @@ services:
     volumes:
       - dbdata:/var/lib/mysql
     networks:
-      - taskup-net
+      - evolva-net
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: taskup_phpmyadmin
+    container_name: evolva_phpmyadmin
     restart: unless-stopped
     environment:
       PMA_HOST: db
@@ -51,12 +51,12 @@ services:
     ports:
       - "${PHPMYADMIN_PORT}:80"
     networks:
-      - taskup-net
+      - evolva-net
     depends_on:
       - db
 
 networks:
-  taskup-net:
+  evolva-net:
 
 volumes:
   dbdata:
