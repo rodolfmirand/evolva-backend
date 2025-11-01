@@ -9,7 +9,7 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 class AuthServiceProvider extends ServiceProvider
 {
     protected $policies = [
-        User::class => UserPolicy::class, // <-- ADICIONE ESTA LINHA
+        User::class => UserPolicy::class,
     ];
 
     /**
