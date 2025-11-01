@@ -4,24 +4,21 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 
 RUN apt-get update && apt-get install -y \
     git zip unzip libzip-dev libpng-dev libonig-dev libxml2-dev libicu-dev \
-    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath intl \
+    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath intl fileinfo \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
+COPY backend/composer.json backend/composer.lock ./
+
+RUN composer install --no-dev --optimize-autoloader
+
 COPY backend/ ./
 
 RUN mkdir -p storage bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache
 
-RUN apt-get update && apt-get install -y \
-    git zip unzip libzip-dev libpng-dev libonig-dev libxml2-dev libicu-dev \
-    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath intl \
-    && docker-php-ext-install fileinfo \
-    && rm -rf /var/lib/apt/lists/*
-
 EXPOSE 9000
-
 CMD ["php-fpm"]
