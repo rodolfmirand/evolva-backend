@@ -13,7 +13,7 @@ class JourneyController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $journeys = $user->journeys()->with('users', 'tasks')->get(); //TODOIN: ajustar relação pivot
+        $journeys = $user->journeys()->with('users', 'tasks')->get();
         return response()->json($journeys);
     }
 
