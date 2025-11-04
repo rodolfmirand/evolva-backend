@@ -5,15 +5,18 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Journey;
+use App\Services\JourneyService;
 use Illuminate\Support\Facades\Auth;
 
 class JourneyController extends Controller
 {
 
+    public function __construct(private JourneyService $journeyService) { }
+
     public function index()
     {
         $user = Auth::user();
-        $journeys = $user->journeys()->with('users', 'tasks')->get();
+        $journeys = $this->journeyService->getAllJourneys($user); //TODO: ajustar restante do service e requests
         return response()->json($journeys);
     }
 
