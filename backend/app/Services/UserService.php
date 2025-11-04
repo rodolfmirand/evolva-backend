@@ -29,7 +29,7 @@ class UserService
         $updateData = Arr::only($data, ['name', 'email', 'password']);
 
         // Hasher a senha somente se ela foi enviada na requisição
-        if(isset($updateData['password'])){
+        if (isset($updateData['password'])) {
             $updateData['password'] = Hash::make($updateData['password']);
         }
 
@@ -37,5 +37,16 @@ class UserService
         $user->save();
 
         return $user;
+    }
+
+    public function getJourneysByUser($userId)
+    {
+        $user = User::with('journeys')->find($userId);
+
+        if (!$user) {
+            return response()->json(['message' => 'Usuário não encontrado!'], 404);
+        }
+
+        return response()->json($user->journeys);
     }
 }
