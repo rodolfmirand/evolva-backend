@@ -8,6 +8,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+use App\Models\Task;
+use App\Models\StoreItems;
+
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -53,5 +56,12 @@ class User extends Authenticatable
     public function tasks()
     {
         return $this->hasMany(Task::class);
+    }
+
+    public function inventory()
+    {
+        return $this->belongsToMany(StoreItems::class, 'user_inventory')
+            ->withPivot(['quantity', 'acquired_at'])
+            ->withTimestamps();
     }
 }
