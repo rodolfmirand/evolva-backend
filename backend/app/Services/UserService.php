@@ -39,7 +39,7 @@ class UserService
         return $user;
     }
 
-    public function getJourneysByUser($userId): Collection
+    public function getJourneysByUser($userId): ?Collection
     {
         $user = User::with('journeys')->find($userId);
 
