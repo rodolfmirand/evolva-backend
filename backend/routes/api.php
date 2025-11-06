@@ -9,10 +9,11 @@ use App\Http\Controllers\Api\JourneyController;
 Route::middleware('auth:sanctum')->group(function () {
     // Rotas de usuários
     Route::get('/user', function (Request $request) {
-        return $request->user();
+        return $request->user(); // retorna os dados do usuário autenticado
     });
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::patch('/users/{user}', [AuthController::class, 'update']);
+    Route::patch('/users/{user}', [UserController::class, 'update']);
+    Route::get('/users/{userId}/journeys', [UserController::class, 'journeys']);
 
     // Rotas de jornadas
     Route::post('/journeys', [JourneyController::class, 'store']);
@@ -23,5 +24,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
 });
 
-Route::post('/register', [AuthController::class, 'register']);
+Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);

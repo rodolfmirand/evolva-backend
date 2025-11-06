@@ -28,6 +28,7 @@ class User extends Authenticatable
         'xp',
         'level',
         'avatar_url',
+        'coins'
     ];
 
     /**
