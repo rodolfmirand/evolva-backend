@@ -10,18 +10,23 @@ class StoreItems extends Model
     use HasFactory;
 
     protected $fillable = [
+        'store_id',
         'name',
         'description',
-        'type',
         'image_url',
         'price',
-        'is_active',
+        'rarity',
     ];
 
-    public function owers()
+    public function store()
     {
-        return  $this->belongsToMany(User::class, 'user_inventory')
-            ->withPivot(['quantity'])
+        return $this->belongsTo(Store::class);
+    }
+
+    public function owners()
+    {
+        return $this->belongsToMany(User::class, 'user_inventory')
+            ->withPivot(['quantity', 'acquired_at'])
             ->withTimestamps();
     }
 }
