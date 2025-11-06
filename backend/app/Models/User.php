@@ -64,4 +64,11 @@ class User extends Authenticatable
             ->withPivot(['quantity', 'acquired_at'])
             ->withTimestamps();
     }
+  
+    public function journeys()
+    {
+        return $this->belongsToMany(Journey::class, 'journey_user')
+        ->withPivot('is_master')
+        ->withTimestamps();
+    }
 }
