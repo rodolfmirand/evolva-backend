@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('user_inventory', function (Blueprint $table) {
@@ -24,15 +21,10 @@ return new class extends Migration
 
             $table->integer('quantity')->default(1);
 
-            $table->timestamp('acquired_at')->useCurrent();
-
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('user_inventory');

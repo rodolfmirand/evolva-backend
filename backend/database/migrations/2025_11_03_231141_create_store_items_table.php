@@ -11,18 +11,15 @@ return new class extends Migration
         Schema::create('store_items', function (Blueprint $table) {
             $table->id();
 
-            $table->string("name");
+            $table->foreignId('store_id')
+                ->constrained('stores')
+                ->onDelete('cascade');
 
+            $table->string('name');
             $table->text('description')->nullable();
-
-            $table->string('type');
-
             $table->string('image_url')->nullable();
-
-            $table->integer('price')->default(0);
-
-            $table->boolean('is_active')->default(true);
-
+            $table->decimal('price', 10, 2)->default(0);
+            $table->integer('rarity')->default(1);
 
             $table->timestamps();
         });
