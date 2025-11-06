@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 
@@ -33,20 +34,15 @@ class UserService
             $updateData['password'] = Hash::make($updateData['password']);
         }
 
-        $user->fill($updateData);
-        $user->save();
+        $user->update($updateData);
 
         return $user;
     }
 
-    public function getJourneysByUser($userId)
+    public function getJourneysByUser($userId): ?Collection
     {
         $user = User::with('journeys')->find($userId);
 
-        if (!$user) {
-            return response()->json(['message' => 'Usuário não encontrado!'], 404);
-        }
-
-        return response()->json($user->journeys);
+        return $user ? $user->journeys : null;
     }
 }

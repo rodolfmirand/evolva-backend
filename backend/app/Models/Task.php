@@ -33,6 +33,12 @@ class Task extends Model
         'requires_proof' => 'boolean',
     ];
 
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+        
+    }
+
     public function journey()
     {
         return $this->belongsTo(Journey::class);

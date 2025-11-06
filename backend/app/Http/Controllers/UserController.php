@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
 
@@ -26,23 +26,20 @@ class UserController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request)
+    public function create()
     {
-        $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'confirmed', Password::min(8)],
-        ]);
+        //
+    }
 
-        if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 422); // 422 Unprocessable Entity
-        }
-
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
         try {
-            $user = $this->userService->createUser($validator->validated());
+            $validated = $request->validated();
 
+            $user = $this->userService->createUser($validated);
             $token = $user->createToken('auth_token')->plainTextToken;
 
             return response()->json([
@@ -57,14 +54,6 @@ class UserController extends Controller
                 'error'   => $e->getMessage()
             ], 500); // 500 Internal Server Error
         }
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
     /**

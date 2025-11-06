@@ -27,7 +27,10 @@ class Journey extends Model
     protected static function booted()
     {
         static::creating(function ($journey) {
-            $journey->join_code = strtoupper(Str::random(6)); //TODOIN: melhorar essa geração de código
+            do {
+                $code = strtoupper(Str::random(6));
+            } while (self::where('join_code', $code)->exists());
+            $journey->join_code = $code;
         });
     }
 

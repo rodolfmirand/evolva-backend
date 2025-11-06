@@ -9,7 +9,6 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 use App\Models\Task;
-use App\Models\StoreItems;
 
 class User extends Authenticatable
 {
@@ -29,6 +28,14 @@ class User extends Authenticatable
         'level',
         'avatar_url',
         'coins'
+    ];
+
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'xp' => 'integer',
+        'level' => 'integer',
+        'coins' => 'integer',
     ];
 
     /**
@@ -61,15 +68,15 @@ class User extends Authenticatable
 
     public function inventory()
     {
-        return $this->belongsToMany(StoreItems::class, 'user_inventory')
+        return $this->belongsToMany(StoreItem::class, 'user_inventory', 'user_id', 'item_id')
             ->withPivot(['quantity', 'acquired_at'])
             ->withTimestamps();
     }
-  
+
     public function journeys()
     {
         return $this->belongsToMany(Journey::class, 'journey_user')
-        ->withPivot('is_master')
-        ->withTimestamps();
+            ->withPivot('is_master')
+            ->withTimestamps();
     }
 }
