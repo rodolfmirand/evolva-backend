@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\JourneyController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Api\TaskController;
 
 Route::middleware('auth:sanctum')->group(function () {
     // Rotas de usuários
@@ -22,6 +23,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/journeys', [JourneyController::class, 'index']);
     Route::get('/journeys/{id}', [JourneyController::class, 'show']);
     Route::get('/journeys/{id}/users', [JourneyController::class, 'users']);
+    
+    // Rotas de tarefas
+    Route::post('/tasks', [TaskController::class, 'store']);
 
 });
 

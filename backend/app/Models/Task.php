@@ -25,6 +25,7 @@ class Task extends Model
         'is_completed',
         'requires_proof',
         'proof_url',
+        'created_by',
     ];
 
     protected $casts = [
