@@ -49,4 +49,22 @@ class JourneyService
 
         return $journey;
     }
+
+    public function getUsersJourneys(int $journeyId): Collection
+    {
+        $journey = Journey::with('users')->find($journeyId);
+
+        if (!$journey) {
+            abort(404, 'Jornada não encontrada.');
+        }
+
+        return $journey->users->map(function ($user) {
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'is_master' => (bool) $user->pivot->is_master,
+            ];
+        });
+    }
 }

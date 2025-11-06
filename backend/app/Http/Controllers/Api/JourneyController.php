@@ -38,4 +38,10 @@ class JourneyController extends Controller
         $journey = $this->journeyService->joinJourney($request->validated()['join_code'], $user);
         return response()->json($journey);
     }
+
+    public function users($id)
+    {
+        $users = $this->journeyService->getUsersJourneys($id);
+        return response()->json($users);
+    }
 }
