@@ -61,12 +61,6 @@ class User extends Authenticatable
         ];
     }
 
-    public function journeys(){
-        return $this->belongsToMany(Journey::class, 'journey_user')
-            ->withPivot('is_master')
-            ->withTimestamps();
-    }
-
     public function tasks()
     {
         return $this->hasMany(Task::class);
