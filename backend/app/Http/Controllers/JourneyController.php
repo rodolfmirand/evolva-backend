@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\JourneyRequest;
 use App\Http\Requests\JourneyJoinRequest;
+use App\Http\Requests\UpdateJourneyRequest;
 use App\Services\JourneyService;
 use Illuminate\Support\Facades\Auth;
 
@@ -44,4 +45,12 @@ class JourneyController extends Controller
         $users = $this->journeyService->getUsersJourneys($id);
         return response()->json($users);
     }
+
+    public function update(UpdateJourneyRequest $request, $id)
+    {
+        $user = Auth::user(); //TODO: adicionar verificação de permissão if (!user) ou Auth::check() == false em todos os métodos que precisam de autenticação
+        $journey = $this->journeyService->updateJourney($id, $request->validated(), $user);
+        return response()->json($journey);
+    }
+
 }
