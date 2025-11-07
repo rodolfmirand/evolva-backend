@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Journey;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 
 class JourneyService
 {
@@ -67,4 +68,59 @@ class JourneyService
             ];
         });
     }
+
+
+    /**
+     * Atualiza uma jornada se o usuário for mestre.
+     * 
+     * @param int $id  ID da jornada
+     * @param array $data  Dados para atualização validados no request
+     * @param User $user  Usuário autenticado que fez a requisição
+     * @return Journey
+     * 
+     */
+    public function updateJourney(int $id, array $data, User $user): Journey
+    {
+        
+        $journey = Journey::with('users','tasks')->find($id);
+
+        if (!$journey) {
+            abort(404, 'Jornada não encontrada.'); //TODO: alterar para throw, adicionei dessa forma para ser mais rápido
+        }
+
+        $pivot = $journey->users()->where('user_id', $user->id)->first();
+
+        if (!$pivot) {
+            abort(403, 'Você não participa dessa jornada.');
+        }
+
+        if (!$pivot->pivot->is_master) {
+            abort(403, 'Apenas mestres podem atualizar a jornada.');
+        }
+
+        $fields = [];
+        if (isset('title', $data)) {
+            $fields['title'] = $data['title'];
+        }
+
+        if (isset('description', $data)) {
+            $fields['description'] = $data['description'];
+        }
+
+        if (isset('is_private', $data)) {
+            $fields['is_private'] = $data['is_private'];
+        }
+
+
+        if (!empty($fields)) {
+            //TODO: revisar o uso do transaction aqui
+            DB::transaction(function () use ($journey, $fields) {
+                $journey->fill($fields);
+                $journey->save();
+            });
+        }
+
+        return $journey->fresh(['users','tasks']);
+    }
+
 }
