@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+use App\Models\Task;
+
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -25,6 +27,15 @@ class User extends Authenticatable
         'xp',
         'level',
         'avatar_url',
+        'coins'
+    ];
+
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'xp' => 'integer',
+        'level' => 'integer',
+        'coins' => 'integer',
     ];
 
     /**
@@ -59,5 +70,19 @@ class User extends Authenticatable
     public function tasks()
     {
         return $this->hasMany(Task::class);
+    }
+
+    public function inventory()
+    {
+        return $this->belongsToMany(StoreItem::class, 'user_inventory', 'user_id', 'item_id')
+            ->withPivot(['quantity', 'acquired_at'])
+            ->withTimestamps();
+    }
+
+    public function journeys()
+    {
+        return $this->belongsToMany(Journey::class, 'journey_user')
+            ->withPivot('is_master')
+            ->withTimestamps();
     }
 }

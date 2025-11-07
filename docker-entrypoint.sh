@@ -1,7 +1,12 @@
 #!/bin/sh
-# Ajusta permissões
-chown -R www-data:www-data /var/www/html/taskup-backend/storage /var/www/html/taskup-backend/bootstrap/cache
-chmod -R 775 /var/www/html/taskup-backend/storage /var/www/html/taskup-backend/bootstrap/cache
+set -e
+
+echo "Aguardando banco de dados MySQL ficar disponível..."
+
+sleep 15
+
+php artisan migrate --force
 
 # Inicia o PHP-FPM
-php-fpm
+echo "Iniciando PHP-FPM..."
+exec php-fpm

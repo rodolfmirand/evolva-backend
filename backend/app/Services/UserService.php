@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 
@@ -29,12 +30,11 @@ class UserService
         $updateData = Arr::only($data, ['name', 'email', 'password']);
 
         // Hasher a senha somente se ela foi enviada na requisição
-        if(isset($updateData['password'])){
+        if (isset($updateData['password'])) {
             $updateData['password'] = Hash::make($updateData['password']);
         }
 
-        $user->fill($updateData);
-        $user->save();
+        $user->update($updateData);
 
         return $user;
     }

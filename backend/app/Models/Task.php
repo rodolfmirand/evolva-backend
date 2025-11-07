@@ -25,6 +25,7 @@ class Task extends Model
         'is_completed',
         'requires_proof',
         'proof_url',
+        'created_by',
     ];
 
     protected $casts = [
@@ -32,6 +33,12 @@ class Task extends Model
         'is_completed' => 'boolean',
         'requires_proof' => 'boolean',
     ];
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+        
+    }
 
     public function journey()
     {

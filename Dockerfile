@@ -12,9 +12,17 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 COPY backend/ ./
+COPY backend/.env .env
+
+
+RUN composer install --no-dev --optimize-autoloader
 
 RUN mkdir -p storage bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache
 
+COPY ./docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 EXPOSE 9000
-CMD ["php-fpm"]
+
+ENTRYPOINT ["sh", "/usr/local/bin/docker-entrypoint.sh"]
