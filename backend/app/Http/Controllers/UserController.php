@@ -8,9 +8,6 @@ use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\UserService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
@@ -34,7 +31,7 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
         try {
             $validated = $request->validated();
@@ -89,16 +86,5 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         //
-    }
-
-    public function journeys($userId)
-    {
-        $journeys = $this->userService->getJourneysByUser($userId);
-
-        if (!$journeys) {
-            return response()->json(['message' => 'Usuário não encontrado'], 404);
-        }
-
-        return response()->json($journeys);
     }
 }
