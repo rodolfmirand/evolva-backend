@@ -99,11 +99,11 @@ class JourneyService
         }
 
         $fields = [];
-        if (isset($data['title'])) {
+        if (!empty($data['title'])) {
             $fields['title'] = $data['title'];
         }
         
-        if (isset($data['description'])) {
+        if (!empty($data['description'])) {
             $fields['description'] = $data['description'];
         }
         
@@ -113,11 +113,7 @@ class JourneyService
 
 
         if (!empty($fields)) {
-            //TODO: revisar o uso do transaction aqui
-            DB::transaction(function () use ($journey, $fields) {
-                $journey->fill($fields);
-                $journey->save();
-            });
+            $journey->update($fields);
         }
 
         return $journey->fresh(['users','tasks']);
