@@ -88,7 +88,7 @@ class JourneyService
             abort(404, 'Jornada não encontrada.'); //TODO: alterar para throw, adicionei dessa forma para ser mais rápido
         }
 
-        $pivot = $journey->users()->where('user_id', $user->id)->first();
+        $pivot = $journey->users->firstWhere('id', $user->id);
 
         if (!$pivot) {
             abort(403, 'Você não participa dessa jornada.');
@@ -99,15 +99,15 @@ class JourneyService
         }
 
         $fields = [];
-        if (isset('title', $data)) {
+        if (isset($data['title'])) {
             $fields['title'] = $data['title'];
         }
-
-        if (isset('description', $data)) {
+        
+        if (isset($data['description'])) {
             $fields['description'] = $data['description'];
         }
-
-        if (isset('is_private', $data)) {
+        
+        if (isset($data['is_private'])) {
             $fields['is_private'] = $data['is_private'];
         }
 
@@ -122,5 +122,4 @@ class JourneyService
 
         return $journey->fresh(['users','tasks']);
     }
-
 }
