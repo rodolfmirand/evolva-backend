@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth; //TODO: remover ao migrar a validação pro service
 
 class TaskRequest extends FormRequest
 {
@@ -16,7 +16,7 @@ class TaskRequest extends FormRequest
         return $user && $user->journeys()
             ->where('journey_id', $journeyId)
             ->wherePivot('is_master', true)
-            ->exists();
+            ->exists();  //TODO: ajustar esse authorize, acho q era pra tar no service
     }
 
     public function rules(): array
