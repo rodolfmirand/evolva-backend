@@ -22,17 +22,23 @@ class TaskController extends Controller
 
             return response()->json([
                 'message' => 'Tarefa criada com sucesso!',
-                'data' => $task
+                'data'    => $task
             ], 201);
 
         } catch (AuthorizationException $e) {
             return response()->json(['error' => $e->getMessage()], 403);
 
         } catch (QueryException $e) {
-            return response()->json(['error' => 'Erro ao criar a tarefa no banco.'], 500);
+            return response()->json([
+                'error'   => 'Erro ao criar a tarefa no banco.',
+                'details' => $e->getMessage()
+            ], 500);
 
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Erro inesperado: ' . $e->getMessage()], 500);
+            return response()->json([
+                'error'   => 'Erro inesperado.',
+                'details' => $e->getMessage()
+            ], 500);
         }
     }
 }
