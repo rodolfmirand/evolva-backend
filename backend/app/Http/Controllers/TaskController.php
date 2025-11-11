@@ -41,4 +41,32 @@ class TaskController extends Controller
             ], 500);
         }
     }
+
+    public function assignTaskToUser($taskId)
+    {
+        $user = Auth::user();
+        
+        try {
+            $this->taskService->assignTaskToUser($taskId, $user);
+
+            return response()->json([
+                'message' => 'Tarefa atribuída ao usuário com sucesso!'
+            ], 200);
+
+        } catch (AuthorizationException $e) {
+            return response()->json(['error' => $e->getMessage()], 403);
+
+        } catch (QueryException $e) {
+            return response()->json([
+                'error'   => 'Erro ao atribuir a tarefa no banco.',
+                'details' => $e->getMessage()
+            ], 500);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error'   => 'Erro inesperado.',
+                'details' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
