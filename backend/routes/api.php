@@ -28,6 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/tasks', [TaskController::class, 'store']);
     Route::post('/tasks/{taskId}/assign', [TaskController::class, 'assignTaskToUser']);
     Route::post('/tasks/evaluation', [TaskController::class, 'requestEvaluation']);
+    Route::post('/tasks/{taskId}/evaluate', [TaskController::class, 'evaluateTask']);
 });
 // Rotas de usuários desprotegidas
 Route::post('/register', [UserController::class, 'store']);
