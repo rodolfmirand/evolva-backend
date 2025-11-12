@@ -98,4 +98,32 @@ class TaskController extends Controller
             ], 500);
         }
     }
+
+    public function evaluateTask($taskId, TaskEvaluationRequest $request)
+    {
+        $master = Auth::user();
+
+        try {
+            $this->taskService->evaluateTask($request->validated(), $master, (int) $taskId);
+
+            return response()->json([
+                'message' => 'Tarefa avaliada com sucesso!'
+            ], 200);
+
+        } catch (AuthorizationException $e) {
+            return response()->json(['error' => $e->getMessage()], 403);
+
+        } catch (QueryException $e) {
+            return response()->json([
+                'error'   => 'Erro ao completar a tarefa no banco.',
+                'details' => $e->getMessage()
+            ], 500);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error'   => 'Erro inesperado.',
+                'details' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
