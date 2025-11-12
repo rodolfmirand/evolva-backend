@@ -26,4 +26,15 @@ class TaskEvaluationRequest extends FormRequest
             'proof_url' => ['nullable', 'url', 'max:255'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'task_id.required' => 'O campo task_id é obrigatório.',
+            'task_id.integer'  => 'O campo task_id deve ser um número inteiro.',
+            'task_id.exists'   => 'A tarefa especificada não existe.',
+            'proof_url.url'    => 'O campo proof_url deve ser uma URL válida.',
+            'proof_url.max'    => 'O campo proof_url não pode exceder 255 caracteres.',
+        ];
+    }
 }
