@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -12,20 +13,14 @@ class AuthController extends Controller
 {
     public function __construct(protected UserService $userService) {}
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
-        ]);
+        $validated = $request->validated();
 
-        if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->erros()
-            ], 422);
-        }
-
-        $credentials = $validator->validated();
+        $credentials = [
+            'email'    => $validated['email'],
+            'password' => $validated['password'],
+        ];
 
         $user = $this->userService->getUserByEmail($credentials['email']);
 
@@ -34,7 +29,6 @@ class AuthController extends Controller
                 'message' => 'Credenciais inválidas'
             ], 401);
         }
-
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -45,7 +39,8 @@ class AuthController extends Controller
         ]);
     }
 
-    public function logout(Request $request){
+    public function logout(Request $request)
+    {
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([
