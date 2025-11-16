@@ -24,7 +24,6 @@ class Task extends Model
         'deadline',
         'is_completed',
         'requires_proof',
-        'proof_url',
         'created_by',
     ];
 
@@ -37,7 +36,6 @@ class Task extends Model
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
-        
     }
 
     public function journey()
@@ -47,6 +45,8 @@ class Task extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'task_user')
+            ->withPivot(['status', 'completed_at', 'xp_earned', 'coins_earned', 'assigned_at', 'proof_url'])
+            ->withTimestamps();
     }
 }

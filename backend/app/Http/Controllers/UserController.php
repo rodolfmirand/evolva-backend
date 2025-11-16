@@ -76,9 +76,11 @@ class UserController extends Controller
     {
         $validatedData = $request->validated();
 
-        $updatedUser = $this->userService->updateUser($user, $validatedData);
+        $this->userService->updateUser($user, $validatedData);
 
-        return new UserResource($updatedUser);
+        return response()->json([
+            'message' => 'Usuário atualizado com sucesso!'
+        ]);
     }
     /**
      * Remove the specified resource from storage.
