@@ -9,14 +9,7 @@ class TaskRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        $user = Auth::user();
-        $journeyId = $this->input('journey_id');
-
-        // Permite apenas se o usuário for mestre dessa jornada
-        return $user && $user->journeys()
-            ->where('journey_id', $journeyId)
-            ->wherePivot('is_master', true)
-            ->exists();  //TODO: ajustar esse authorize, acho q era pra tar no service
+        return true;
     }
 
     public function rules(): array
@@ -28,9 +21,9 @@ class TaskRequest extends FormRequest
             'type'           => 'required|string|in:normal,especial,boss',
             'xp_reward'      => 'required|integer|min:0',
             'coin_reward'    => 'required|integer|min:0',
-            'deadline'       => 'nullable|date|after_or_equal:today',
-            'requires_proof' => 'boolean',
-            'proof_url'      => 'nullable|url'
+            'deadline'       => 'nullable|date|after_or_equal:now',
+            'requires_proof' => 'nullable|boolean',
+            'proof_url'      => 'required_if:requires_proof,true|nullable|url'
         ];
     }
 
@@ -40,14 +33,15 @@ class TaskRequest extends FormRequest
             'journey_id.required'      => 'A jornada é obrigatória.',
             'journey_id.exists'        => 'A jornada informada não existe.',
             'title.required'           => 'O título da tarefa é obrigatório.',
-            'title.string'             => 'O título da tarefa deve ser uma string.',
+            'title.string'             => 'O título da tarefa deve ser um texto.',
             'title.max'                => 'O título da tarefa não pode exceder 255 caracteres.',
-            'description.string'       => 'A descrição da tarefa deve ser uma string.',
+            'description.string'       => 'A descrição da tarefa deve ser texto válido.',
             'type.in'                  => 'O tipo de tarefa informado é inválido.',
             'xp_reward.required'       => 'A recompensa de XP é obrigatória.',
             'coin_reward.required'     => 'A recompensa em moedas é obrigatória.',
-            'deadline.after_or_equal'  => 'O prazo não pode ser anterior a hoje.',
-            'proof_url.url'            => 'A URL de prova deve ser um link válido.'
+            'deadline.after_or_equal'  => 'O prazo não pode ser anterior ao momento atual.',
+            'proof_url.required_if'    => 'A URL da prova é obrigatória quando a tarefa exige prova.',
+            'proof_url.url'            => 'A URL de prova deve ser um link válido.',
         ];
     }
 }
