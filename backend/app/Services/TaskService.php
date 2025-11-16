@@ -51,6 +51,7 @@ class TaskService
             'proof_url' => $proofUrl,
         ]);
     }
+    
     public function evaluateTask(array $data, User $master, int $taskId)
     {
         $userId = $data['user_id'];
