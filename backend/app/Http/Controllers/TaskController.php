@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\MasterEvaluationRequest;
 use App\Http\Requests\TaskEvaluationRequest;
 use App\Http\Requests\TaskRequest;
 use App\Services\TaskService;
@@ -109,12 +110,15 @@ class TaskController extends Controller
         }
     }
 
-    public function evaluateTask($taskId, TaskEvaluationRequest $request)
+    public function evaluateTask($taskId, MasterEvaluationRequest $request)
     {
         $master = Auth::user();
 
+        $userId = $request->validated()['user_id'];
+        $status = $request->validated()['status'];
+
         try {
-            $this->taskService->evaluateTask($request->validated(), $master, (int) $taskId);
+            $this->taskService->evaluateTask($userId, $status, $master, (int) $taskId);
 
             return response()->json([
                 'message' => 'Tarefa avaliada com sucesso!'
