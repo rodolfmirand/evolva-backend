@@ -20,7 +20,7 @@ class StoreItem extends Model
 
     public function store()
     {
-        return $this->belongsTo(Store::class);
+        return $this->belongsTo(Store::class, 'store_item_store');
     }
 
     public function owners()
