@@ -18,7 +18,7 @@ class Store extends Model
 
     public function items()
     {
-        return $this->hasMany(StoreItem::class, 'store_item_store');
+        return $this->hasMany(StoreItem::class, 'store_id');
     }
 
     public function journey()
