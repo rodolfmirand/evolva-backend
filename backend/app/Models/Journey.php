@@ -45,4 +45,9 @@ class Journey extends Model
     {
         return $this->hasMany(Task::class);
     }
+
+    public function store()
+    {
+        return $this->hasOne(Store::class);
+    }
 }

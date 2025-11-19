@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\StoreItems;
+use App\Models\StoreItem;
 
 class Store extends Model
 {
@@ -18,6 +18,11 @@ class Store extends Model
 
     public function items()
     {
-        return $this->hasMany(StoreItems::class);
+        return $this->hasMany(StoreItem::class, 'store_id');
+    }
+
+    public function journey()
+    {
+        return $this->belongsTo(Journey::class);
     }
 }
