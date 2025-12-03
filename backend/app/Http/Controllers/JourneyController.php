@@ -53,4 +53,12 @@ class JourneyController extends Controller
         return response()->json($journey);
     }
 
+    public function destroy($id)
+    {
+        $user = Auth::user();
+
+        $this->journeyService->deleteJourney($id, $user);
+
+        return response()->json(['message' => 'Jornada excluída com sucesso.'], 200);
+    }
 }
