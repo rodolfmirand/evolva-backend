@@ -7,6 +7,7 @@ use App\Http\Requests\JourneyRequest;
 use App\Http\Requests\JourneyJoinRequest;
 use App\Http\Requests\UpdateJourneyRequest;
 use App\Services\JourneyService;
+use App\Http\Resources\JourneyResource;
 use Illuminate\Support\Facades\Auth;
 
 class JourneyController extends Controller
@@ -37,7 +38,8 @@ class JourneyController extends Controller
     {
         $user = Auth::user();
         $journey = $this->journeyService->joinJourney($request->validated()['join_code'], $user);
-        return response()->json($journey);
+        $journey->load('users', 'tasks');
+        return new JourneyResource($journey);
     }
 
     public function users($id)
