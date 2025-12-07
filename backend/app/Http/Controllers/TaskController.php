@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\MasterEvaluationRequest;
 use App\Http\Requests\TaskEvaluationRequest;
 use App\Http\Requests\TaskRequest;
 use App\Services\TaskService;
@@ -18,6 +19,19 @@ class TaskController extends Controller
     {
         $user = Auth::user();
 
+        $journeyId = $request->validated()['journey_id'];
+
+        $isMaster = $user->journeys()
+            ->where('journey_id', $journeyId)
+            ->wherePivot('is_master', true)
+            ->exists();
+
+        if (!$isMaster) {
+            return response()->json([
+                'error' => 'Você não tem permissão para criar tarefas nesta jornada.'
+            ], 403);
+        }
+
         try {
             $task = $this->taskService->createTask($request->validated(), $user);
 
@@ -25,16 +39,13 @@ class TaskController extends Controller
                 'message' => 'Tarefa criada com sucesso!',
                 'data'    => $task
             ], 201);
-
         } catch (AuthorizationException $e) {
             return response()->json(['error' => $e->getMessage()], 403);
-
         } catch (QueryException $e) {
             return response()->json([
                 'error'   => 'Erro ao criar a tarefa no banco.',
                 'details' => $e->getMessage()
             ], 500);
-
         } catch (\Exception $e) {
             return response()->json([
                 'error'   => 'Erro inesperado.',
@@ -99,12 +110,15 @@ class TaskController extends Controller
         }
     }
 
-    public function evaluateTask($taskId, TaskEvaluationRequest $request)
+    public function evaluateTask($taskId, MasterEvaluationRequest $request)
     {
         $master = Auth::user();
 
+        $userId = $request->validated()['user_id'];
+        $status = $request->validated()['status'];
+
         try {
-            $this->taskService->evaluateTask($request->validated(), $master, (int) $taskId);
+            $this->taskService->evaluateTask($userId, $status, $master, (int) $taskId);
 
             return response()->json([
                 'message' => 'Tarefa avaliada com sucesso!'

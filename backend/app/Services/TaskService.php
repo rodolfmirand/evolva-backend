@@ -51,11 +51,9 @@ class TaskService
             'proof_url' => $proofUrl,
         ]);
     }
-    public function evaluateTask(array $data, User $master, int $taskId)
+    
+    public function evaluateTask(int $userId, string $status, User $master, int $taskId)
     {
-        $userId = $data['user_id'];
-        $status = $data['status'];
-
         $task = Task::findOrFail($taskId);
         $player = User::findOrFail($userId);
 
@@ -86,23 +84,18 @@ class TaskService
                 $updateData['xp_earned'] = $task->xp_reward;
                 $updateData['coins_earned'] = $task->coin_reward;
                 $updateData['completed_at'] = now();
+                $updateData['status'] = 'approved';
 
                 $player->increment('xp', $task->xp_reward);
                 $player->increment('coins', $task->coin_reward);
+
+                $task->update(['is_completed' => true]);
             } else {
-                $updateData['xp_earned'] = 0;
-                $updateData['coins_earned'] = 0;
+                $updateData['status'] = 'rejected';
             }
 
             $player->tasks()->updateExistingPivot($taskId, $updateData);
         });
-
-        return [
-            'message' => "Status da tarefa atualizado para '{$status}' com sucesso.",
-            'task_id' => $taskId,
-            'user_id' => $userId,
-            'status' => $status,
-        ];
     }
 
     public function createTask(array $data, User $user): Task

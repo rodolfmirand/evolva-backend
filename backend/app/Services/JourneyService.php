@@ -16,7 +16,7 @@ class JourneyService
 
     public function getJourneyById(int $id): Journey
     {
-        return Journey::with('users', 'tasks')->findOrFail($id);
+        return Journey::with('users', 'tasks', 'store')->findOrFail($id);
     }
 
     public function createJourney(array $data, User $user): Journey
@@ -72,16 +72,16 @@ class JourneyService
 
     /**
      * Atualiza uma jornada se o usuário for mestre.
-     * 
+     *
      * @param int $id  ID da jornada
      * @param array $data  Dados para atualização validados no request
      * @param User $user  Usuário autenticado que fez a requisição
      * @return Journey
-     * 
+     *
      */
     public function updateJourney(int $id, array $data, User $user): Journey
     {
-        
+
         $journey = Journey::with('users','tasks')->find($id);
 
         if (!$journey) {
@@ -102,11 +102,11 @@ class JourneyService
         if (!empty($data['title'])) {
             $fields['title'] = $data['title'];
         }
-        
+
         if (!empty($data['description'])) {
             $fields['description'] = $data['description'];
         }
-        
+
         if (isset($data['is_private'])) {
             $fields['is_private'] = $data['is_private'];
         }

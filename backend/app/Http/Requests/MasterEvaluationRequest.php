@@ -22,8 +22,8 @@ class MasterEvaluationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'userId' => ['required|integer|exists:users,id'],
-            'status' => ['required|string|in:approved,rejected'],
+            'user_id' => ['required', 'integer', 'exists:users,id'],
+            'status' => ['required', 'string', 'in:approved,rejected'],
         ];
     }
 
