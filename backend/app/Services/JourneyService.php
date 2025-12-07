@@ -118,4 +118,48 @@ class JourneyService
 
         return $journey->fresh(['users','tasks']);
     }
+
+    public function deleteJourney(int $journeyId, User $user): bool
+    {
+        $journey = Journey::with('users', 'tasks')->find($journeyId);
+
+        if (!$journey) {
+            abort(404, 'Jornada não encontrada.');
+        }
+
+        $pivot = $journey->users->firstWhere('id', $user->id);
+
+        if (!$pivot) {
+            abort(403, 'Você não participa dessa jornada.');
+        }
+
+        if (!$pivot->pivot->is_master) {
+            abort(403, 'Apenas mestres podem excluir a jornada.');
+        }
+
+        DB::transaction(function () use ($journey) {
+
+            //remover relações pivot journey_user
+            $journey->users()->detach();
+
+            //remover todas as tasks e seus pivots (task_user)
+            foreach ($journey->tasks as $task) {
+                $task->users()->detach(); // pivot task_user
+                $task->delete();
+            }
+
+            //remover store se existir
+            if ($journey->store) {
+                $journey->store->delete();
+            }
+
+            //deletar jornada
+            $journey->delete();
+
+            //futuramente enviar notificação
+            //event(new JourneyDeleted($journey));
+        });
+
+        return true;
+    }
 }
