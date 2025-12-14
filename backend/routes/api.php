@@ -34,3 +34,6 @@ Route::middleware('auth:sanctum')->group(function () {
 // Rotas de usuários desprotegidas
 Route::post('/register', [UserController::class, 'store']);
 Route::post('/login', [AuthController::class, 'login']);
+
+// Jornadas públicas
+Route::get('/journeys/public', [JourneyController::class, 'publicList']);

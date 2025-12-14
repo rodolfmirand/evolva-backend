@@ -25,12 +25,20 @@ class JourneyService
             'title' => $data['title'],
             'description' => $data['description'] ?? null,
             'is_private' => $data['is_private'] ?? true,
+            'image_url' => $data['image_url'] ?? null,
         ]);
 
         // Adiciona o criador como mestre
         $journey->users()->attach($user->id, ['is_master' => true]);
 
         return $journey;
+    }
+
+    public function getPublicJourneys(): Collection
+    {
+        return Journey::where('is_private', false)
+            ->with('users', 'tasks')
+            ->get();
     }
 
     public function joinJourney(string $joinCode, User $user): Journey
@@ -82,7 +90,7 @@ class JourneyService
     public function updateJourney(int $id, array $data, User $user): Journey
     {
 
-        $journey = Journey::with('users','tasks')->find($id);
+        $journey = Journey::with('users', 'tasks')->find($id);
 
         if (!$journey) {
             abort(404, 'Jornada não encontrada.'); //TODO: alterar para throw, adicionei dessa forma para ser mais rápido
@@ -116,7 +124,7 @@ class JourneyService
             $journey->update($fields);
         }
 
-        return $journey->fresh(['users','tasks']);
+        return $journey->fresh(['users', 'tasks']);
     }
 
     public function deleteJourney(int $journeyId, User $user): bool
