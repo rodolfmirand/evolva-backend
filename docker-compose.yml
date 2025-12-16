@@ -6,7 +6,6 @@ services:
     container_name: evolva_app
     volumes:
       - ./backend:/var/www/html
-      - /var/www/html/vendor
     networks:
       - evolva-net
     depends_on:
@@ -16,7 +15,7 @@ services:
     image: nginx:stable
     container_name: evolva_nginx
     ports:
-      - "${NGINX_PORT}:80"
+      - "8080:80"
     volumes:
       - ./backend:/var/www/html
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
@@ -30,35 +29,19 @@ services:
     container_name: evolva_db
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: evolva
+      MYSQL_USER: evolva
+      MYSQL_PASSWORD: evolva
     ports:
-      - "${MYSQL_PORT}:3306"
+      - "3306:3306"
     volumes:
       - dbdata:/var/lib/mysql
     networks:
       - evolva-net
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: evolva_phpmyadmin
-    restart: unless-stopped
-    environment:
-      PMA_HOST: db
-      PMA_USER: ${MYSQL_ROOT_USER}
-      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-    ports:
-      - "${PHPMYADMIN_PORT}:80"
-    networks:
-      - evolva-net
-    depends_on:
-      - db
-
 networks:
   evolva-net:
-
 
 volumes:
   dbdata:
